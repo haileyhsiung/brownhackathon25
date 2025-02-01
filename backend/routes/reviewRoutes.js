@@ -1,21 +1,21 @@
 const express = require('express');
-const Review = require('../models/reviewModel');
+const Student = require('../models/studentModel');
 //create router
 const router = express.Router();
 //imports functions from reviewControllers used in the api endpoints
-const{addReview, getReviews, deleteReview} = require('../controllers/reviewController')
+const{getLeaderBoard, getStudentUser, updateUserStats, claimReward} = require('../controllers/reviewController')
 
 
 //API ENDPOINTS
+router.get('/leaderboard', getLeaderBoard);
 
-//GET route to get object and sends response object
-router.get('/', getReviews)
+router.get('/user/:bannerID', getStudentUser);
 
-// POST route to add new data
-router.post('/', addReview)
 
-//DELETE route to delete reviews 
-router.delete('/:id', deleteReview)
+router.post('/update-box-num/:bannerID', updateUserStats); 
+
+router.post('/claim-reward/:bannerID', claimReward); 
+
 
 //exports router object so that it is available to other files to import using require 
 module.exports = router;
