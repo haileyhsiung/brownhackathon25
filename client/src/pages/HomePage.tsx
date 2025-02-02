@@ -18,7 +18,7 @@ const HomePage = () => {
 
   const fetchStats = async (userBannerID: string) => {
     const statsResponse = await fetch(
-      `http://localhost:5001/user/${userBannerID}`,
+      `https://brownhackathon25.onrender.com/user/${userBannerID}`,
       {
         method: "GET",
         headers: {
@@ -37,7 +37,7 @@ const HomePage = () => {
       if (user?.primaryEmailAddress?.emailAddress) {
         try {
           const bannerResponse = await fetch(
-            `http://localhost:5001/user-bannerID/${user.primaryEmailAddress.emailAddress}`,
+            `https://brownhackathon25.onrender.com/${user.primaryEmailAddress.emailAddress}`,
             {
               method: "GET",
               headers: {
@@ -66,7 +66,7 @@ const HomePage = () => {
     try {
       // Claim the reward
       const claimResponse = await fetch(
-        `http://localhost:5001/claim-reward/${bannerID}`,
+        `https://brownhackathon25.onrender.com/claim-reward/${bannerID}`,
         {
           method: "POST",
           headers: {
@@ -86,7 +86,7 @@ const HomePage = () => {
 
       // Send confirmation email
       const emailResponse = await fetch(
-        "http://localhost:5001/send-reward-email",
+        "https://brownhackathon25.onrender.com/send-reward-email",
         {
           method: "POST",
           headers: {

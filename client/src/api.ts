@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3232";
+const API_BASE_URL = "https://brownhackathon25.onrender.com";
 
 export async function fetchFromAPI(endpoint: string, options = {}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, options);

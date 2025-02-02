@@ -7,7 +7,7 @@ const LeaderboardPage = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await fetch("http://localhost:5001/leaderboard", {
+        const response = await fetch("https://brownhackathon25.onrender.com/leaderboard", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

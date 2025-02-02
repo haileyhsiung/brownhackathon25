@@ -56,7 +56,7 @@ const App: React.FC = () => {
       if (isSignedIn && user) {
         try {
           // Send POST request to login endpoint
-          const response = await fetch("http://localhost:5001/login", {
+          const response = await fetch("https://brownhackathon25.onrender.com/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
