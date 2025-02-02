@@ -1,4 +1,42 @@
-const Student = require('../models/studentModel');
+const Student = require('../models/reviewModel');
+
+//register a new user
+const registerUser = async (req, res) => {
+    try {
+        const { studentName, bannerID, email, password } = req.body;
+
+        let student = await Student.findOne({ email });
+        if (student) {
+            return res.status(400).json({ error: "Student already registered" });
+        }
+
+        student = new Student({ studentName, bannerID, email, password });
+        await student.save();
+
+        res.status(201).json({ message: "Registration successful", student });
+    } catch (err) {
+        res.status(500).json({ error: "Server error", details: err.message });
+    }
+};
+
+//login 
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const student = await Student.findOne({ email });
+
+        if (!student || student.password !== password) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        res.json({ message: "Login successful", student });
+    } catch (err) {
+        res.status(500).json({ error: "Server error", details: err.message });
+    }
+};
+
+
+
 
 //to get top 10 students sorted by number of boxes for leaderboard
 const getLeaderBoard = async (req, res) => {
@@ -80,4 +118,5 @@ const claimReward =  async (req, res) => {
 
 
 
-module.exports = {getLeaderBoard, getStudentUser, updateUserStats, claimReward};
+module.exports = {registerUser, loginUser, getLeaderBoard, 
+    getStudentUser, updateUserStats, claimReward};
