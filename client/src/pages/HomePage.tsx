@@ -14,6 +14,7 @@ const HomePage = () => {
   const [bannerID, setBannerID] = useState("");
   const [selectedReward, setSelectedReward] = useState<any>(null);
   const [claimError, setClaimError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,7 +60,8 @@ const HomePage = () => {
     if (!selectedReward) return;
 
     try {
-      const response = await fetch(
+      // Claim the reward
+      const claimResponse = await fetch(
         `http://localhost:5001/claim-reward/${bannerID}`,
         {
           method: "POST",
@@ -73,15 +75,36 @@ const HomePage = () => {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!claimResponse.ok) {
+        const errorData = await claimResponse.json();
         throw new Error(errorData.error || "Failed to claim reward");
       }
 
-      const updatedStats = await response.json();
+      // Send confirmation email
+      const emailResponse = await fetch(
+        "http://localhost:5001/send-reward-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user?.primaryEmailAddress?.emailAddress,
+            reward: selectedReward.description,
+          }),
+        }
+      );
+
+      if (!emailResponse.ok) {
+        throw new Error("Failed to send confirmation email");
+      }
+
+      // Update state
+      const updatedStats = await claimResponse.json();
       setStats(updatedStats);
       setSelectedReward(null);
       setClaimError(null);
+      setShowConfirmation(true);
     } catch (err) {
       setClaimError("Failed to claim reward");
     }
@@ -200,6 +223,25 @@ const HomePage = () => {
                 {stats.totalPoints >= selectedReward.points
                   ? "Claim Reward"
                   : "Not Enough Points"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showConfirmation && (
+          <div
+            className="modal-backdrop"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <div className="reward-modal">
+              <h2>Reward Claimed!</h2>
+              <p>Your reward details have been sent to:</p>
+              <p>{user?.primaryEmailAddress?.emailAddress}</p>
+              <button
+                className="btn-claim"
+                onClick={() => setShowConfirmation(false)}
+              >
+                Close
               </button>
             </div>
           </div>
