@@ -15,6 +15,7 @@ const HomePage = () => {
   const [selectedReward, setSelectedReward] = useState<any>(null);
   const [claimError, setClaimError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   const fetchStats = async (userBannerID: string) => {
     const statsResponse = await fetch(
@@ -30,6 +31,35 @@ const HomePage = () => {
     if (!statsResponse.ok) throw new Error("Failed to fetch stats");
     const statsData = await statsResponse.json();
     setStats(statsData);
+  };
+
+  const syncDriveData = async () => {
+    try {
+      setSyncMessage("Syncing data...");
+      const response = await fetch("http://localhost:5001/merge-drive-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to sync data");
+      }
+
+      const result = await response.json();
+      console.log("Sync result:", result);
+      setSyncMessage("Data synced successfully!");
+
+      if (bannerID) {
+        await fetchStats(bannerID);
+      }
+    } catch (error) {
+      console.error("Sync error:", error);
+      setSyncMessage("Failed to sync data. Please try again later.");
+    } finally {
+      setTimeout(() => setSyncMessage(null), 5000);
+    }
   };
 
   useEffect(() => {
@@ -51,6 +81,7 @@ const HomePage = () => {
           setBannerID(fetchedBannerID.bannerID);
 
           await fetchStats(fetchedBannerID.bannerID);
+          await syncDriveData();
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
@@ -64,7 +95,6 @@ const HomePage = () => {
     if (!selectedReward) return;
 
     try {
-      // Claim the reward
       const claimResponse = await fetch(
         `https://brownhackathon25.onrender.com/claim-reward/${bannerID}`,
         {
@@ -84,7 +114,6 @@ const HomePage = () => {
         throw new Error(errorData.error || "Failed to claim reward");
       }
 
-      // Send confirmation email
       const emailResponse = await fetch(
         "https://brownhackathon25.onrender.com/send-reward-email",
         {

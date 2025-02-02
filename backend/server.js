@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const path = require("path");
 const studentRoutes = require("./routes/studentRoutes");
+const dataSyncRoutes = require("./routes/dataSyncRoutes");
 // Start the server
 const PORT = process.env.PORT;
 
@@ -36,6 +37,19 @@ app.use(express.json()); //Converts the incoming request's JSON payload into a J
 
 // Routes
 app.use("/", studentRoutes);
+app.use("/", dataSyncRoutes);
+
+// Add periodic sync (every 1 hour)
+setInterval(async () => {
+  try {
+    const driveData = await getDriveData();
+    await Student.deleteMany({});
+    await Student.insertMany(driveData);
+    console.log("Periodic sync completed");
+  } catch (error) {
+    console.error("Auto-sync failed:", error);
+  }
+}, 3600000);
 
 // allows files in client folder to be accessed from browser, only needed if we use backend port for the front end
 app.use(express.static(path.join(__dirname, "client")));
