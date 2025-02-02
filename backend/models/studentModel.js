@@ -5,8 +5,7 @@ const studentSchema = new mongoose.Schema({
   bannerID: { type: String, required: true, unique: true },
   totalBoxes: { type: Number, required: true, default: 0 }, 
   totalPoints: { type: Number, required: true, default: 0 }, 
-  email: { type: String, required: true, unique: true }, 
-  password: { type: String, required: true }
+  email: { type: String, required: true, unique: true }
 });
 
 const Student = mongoose.model('Student', studentSchema); //applies the schema to a model 

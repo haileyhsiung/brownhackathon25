@@ -3,14 +3,14 @@ const Student = require('../models/studentModel');
 //register a new user
 const registerUser = async (req, res) => {
     try {
-        const { studentName, bannerID, email, password } = req.body;
+        const { studentName, bannerID, email } = req.body;
 
         let student = await Student.findOne({ email });
         if (student) {
             return res.status(400).json({ error: "Student already registered" });
         }
 
-        student = new Student({ studentName, bannerID, email, password });
+        student = new Student({ studentName, bannerID, email });
         await student.save();
 
         res.status(201).json({ message: "Registration successful", student });
@@ -22,11 +22,11 @@ const registerUser = async (req, res) => {
 //login 
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email } = req.body;
         const student = await Student.findOne({ email });
 
-        if (!student || student.password !== password) {
-            return res.status(400).json({ error: "Invalid credentials" });
+        if (!student) {
+            return res.status(400).json({ error: "Register User" });
         }
 
         res.json({ message: "Login successful", student });
@@ -62,6 +62,7 @@ const getStudentUser = async (req, res) => {
         res.status(500).json({ error: "Server error", details: err.message });
     }
 };
+
 
 //to update totalBoxes and totalPoints count 
 const updateUserStats =  async (req, res) => {
