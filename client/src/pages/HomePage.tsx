@@ -36,12 +36,15 @@ const HomePage = () => {
   const syncDriveData = async () => {
     try {
       setSyncMessage("Syncing data...");
-      const response = await fetch("http://localhost:5001/merge-drive-data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://brownhackathon25.onrender.com/merge-drive-data",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to sync data");
