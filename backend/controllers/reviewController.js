@@ -81,7 +81,7 @@ const updateUserStats =  async (req, res) => {
         }
 
         res.json({
-            message: "Student box count updated successfully",
+            message: "Student stats updated successfully",
             updatedStudent: student
         });
     } catch (err) {
@@ -108,7 +108,7 @@ const claimReward =  async (req, res) => {
         }
 
         res.json({
-            message: "Student box count updated successfully",
+            message: "Student reward updated successfully",
             updatedStudent: student
         });
     } catch (err) {

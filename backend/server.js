@@ -40,6 +40,6 @@ app.use('/api/reviews', reviewRoutes)
 
 
 // allows files in client folder to be accessed from browser, only needed if we use backend port for the front end 
-app.use(express.static(path.join(__dirname, 'client')));
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 
