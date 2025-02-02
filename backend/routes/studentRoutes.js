@@ -3,7 +3,7 @@ const Student = require('../models/studentModel');
 //create router
 const router = express.Router();
 //imports functions from studentControllers used in the api endpoints
-const{registerUser, loginUser, getLeaderBoard, getStudentUser, 
+const{registerUser, loginUser, getLeaderBoard, getStudentUser, getBannerID
     updateUserStats, claimReward} = require('../controllers/studentController')
 
 
@@ -18,6 +18,8 @@ router.get('/leaderboard', getLeaderBoard);
 
 
 router.get('/user/:bannerID', getStudentUser);
+
+router.get('/user-bannerID/:email', getBannerID);
 
 router.post('/update-stats/:bannerID', updateUserStats); 
 
