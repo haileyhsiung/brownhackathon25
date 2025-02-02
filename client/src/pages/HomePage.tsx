@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/HomePage.css";
 import { SignOutButton, useUser } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";
@@ -10,7 +10,116 @@ import shirt from "../assets/shirt.png";
 
 const HomePage = () => {
   const { user } = useUser();
-  const [stats, setStats] = useState({ totalBoxes: 0, totalPoints: 0 }); 
+  const [stats, setStats] = useState({ totalBoxes: 0, totalPoints: 0 });
+  const [bannerID, setBannerID] = useState("");
+  const [selectedReward, setSelectedReward] = useState<any>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user?.primaryEmailAddress?.emailAddress) {
+        try {
+          const bannerResponse = await fetch(
+            `http://localhost:5001/user-bannerID/${user.primaryEmailAddress.emailAddress}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!bannerResponse.ok) throw new Error("Failed to fetch bannerID");
+          const fetchedBannerID = await bannerResponse.json();
+          setBannerID(fetchedBannerID.bannerID);
+
+          const statsResponse = await fetch(
+            `http://localhost:5001/user/${fetchedBannerID.bannerID}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!statsResponse.ok) throw new Error("Failed to fetch stats");
+          const statsData = await statsResponse.json();
+          setStats(statsData);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
+  const handleClaimReward = async () => {
+    if (!selectedReward) return;
+
+    try {
+      // Claim the reward
+      const claimResponse = await fetch(
+        `http://localhost:5001/claim-reward/${bannerID}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bannerID: bannerID,
+            change: -selectedReward.points,
+          }),
+        }
+      );
+
+      if (!claimResponse.ok) {
+        const errorData = await claimResponse.json();
+        throw new Error(errorData.error || "Failed to claim reward");
+      }
+
+      // Send confirmation email
+      const emailResponse = await fetch(
+        "http://localhost:5001/send-reward-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user?.primaryEmailAddress?.emailAddress,
+            reward: selectedReward.description,
+          }),
+        }
+      );
+
+      if (!emailResponse.ok) {
+        throw new Error("Failed to send confirmation email");
+      }
+
+      // Update state
+      const updatedStats = await claimResponse.json();
+      setStats(updatedStats);
+      setSelectedReward(null);
+      setClaimError(null);
+      setShowConfirmation(true);
+    } catch (err) {
+      setClaimError("Failed to claim reward");
+    }
+  };
+
+  const rewards = [
+    { points: 10, description: "Jo's Cookie", image: cookie },
+    { points: 25, description: "1 Swipe", image: swipe },
+    {
+      points: 50,
+      description: "10% Off Brown Bookstore Coupon",
+      image: coupon,
+    },
+    { points: 100, description: "Brown T-Shirt!!!", image: shirt },
+  ];
 
   return (
     <div className="page">
@@ -67,29 +176,12 @@ const HomePage = () => {
             </div>
           </div>
           <div className="rewards-container">
-            {[
-              {
-                points: 10,
-                description: "Jo's Cookie",
-                image: cookie,
-              },
-              {
-                points: 25,
-                description: "1 Swipe",
-                image: swipe,
-              },
-              {
-                points: 50,
-                description: "10% Off Brown Bookstore Coupon",
-                image: coupon,
-              },
-              {
-                points: 100,
-                description: "Brown T-Shirt!!!",
-                image: shirt,
-              },
-            ].map((reward, index) => (
-              <div key={index} className="reward-card">
+            {rewards.map((reward, index) => (
+              <div
+                key={index}
+                className="reward-card"
+                onClick={() => setSelectedReward(reward)}
+              >
                 <img
                   src={reward.image}
                   alt={reward.description}
@@ -101,6 +193,59 @@ const HomePage = () => {
             ))}
           </div>
         </div>
+
+        {selectedReward && (
+          <div
+            className="modal-backdrop"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <div className="reward-modal">
+              <button
+                className="modal-close"
+                onClick={() => setSelectedReward(null)}
+              >
+                ×
+              </button>
+              <img
+                src={selectedReward.image}
+                alt={selectedReward.description}
+                className="modal-image"
+              />
+              <h2>{selectedReward.description}</h2>
+              <p>Cost: {selectedReward.points} Points</p>
+              <p>You have: {stats.totalPoints} Points</p>
+              {claimError && <p className="error-message">{claimError}</p>}
+              <button
+                className="btn-claim"
+                onClick={handleClaimReward}
+                disabled={stats.totalPoints < selectedReward.points}
+              >
+                {stats.totalPoints >= selectedReward.points
+                  ? "Claim Reward"
+                  : "Not Enough Points"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showConfirmation && (
+          <div
+            className="modal-backdrop"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <div className="reward-modal">
+              <h2>Reward Claimed!</h2>
+              <p>Your reward details have been sent to:</p>
+              <p>{user?.primaryEmailAddress?.emailAddress}</p>
+              <button
+                className="btn-claim"
+                onClick={() => setShowConfirmation(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

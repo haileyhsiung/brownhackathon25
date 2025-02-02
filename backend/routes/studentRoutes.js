@@ -1,30 +1,36 @@
-const express = require('express');
-const Student = require('../models/studentModel');
+const express = require("express");
+const Student = require("../models/studentModel");
 //create router
 const router = express.Router();
 //imports functions from studentControllers used in the api endpoints
-const{registerUser, loginUser, getLeaderBoard, getStudentUser, getBannerID,
-    updateUserStats, claimReward} = require('../controllers/studentController')
-
+const {
+  registerUser,
+  loginUser,
+  getLeaderBoard,
+  getStudentUser,
+  getBannerID,
+  updateUserStats,
+  claimReward,
+  sendRewardEmail,
+} = require("../controllers/studentController");
 
 //API ENDPOINTS
 
-router.post('/register', registerUser);
+router.post("/register", registerUser);
 
-router.post('/login', loginUser);
+router.post("/login", loginUser);
 
+router.get("/leaderboard", getLeaderBoard);
 
-router.get('/leaderboard', getLeaderBoard);
+router.get("/user/:bannerID", getStudentUser);
 
+router.get("/user-bannerID/:email", getBannerID);
 
-router.get('/user/:bannerID', getStudentUser);
+router.post("/update-stats/:bannerID", updateUserStats);
 
-router.get('/user-bannerID/:email', getBannerID);
+router.post("/claim-reward/:bannerID", claimReward);
 
-router.post('/update-stats/:bannerID', updateUserStats); 
+router.post("/send-reward-email", sendRewardEmail);
 
-router.post('/claim-reward/:bannerID', claimReward); 
-
-
-//exports router object so that it is available to other files to import using require 
+//exports router object so that it is available to other files to import using require
 module.exports = router;

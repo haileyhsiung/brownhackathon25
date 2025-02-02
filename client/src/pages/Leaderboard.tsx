@@ -1,19 +1,56 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Leaderboard.css";
 
 const LeaderboardPage = () => {
-  const leaderboardData = [
-    { rank: "1ST", name: "HDN", score: 959244417 },
-    { rank: "2ND", name: "CSI", score: 947357401 },
-    { rank: "3RD", name: "JGV", score: 939113841 },
-    { rank: "4TH", name: "AAA", score: 906620103 },
-    { rank: "5TH", name: "AWC", score: 878158101 },
-    { rank: "6TH", name: "IXV", score: 850404399 },
-    { rank: "7TH", name: "OGX", score: 823622865 },
-    { rank: "8TH", name: "DQE", score: 802947386 },
-    { rank: "9TH", name: "VUS", score: 794364074 },
-    { rank: "10TH", name: "KTB", score: 693584974 },
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch("http://localhost:5001/leaderboard", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch leaderboard data");
+        }
+
+        const data = await response.json();
+        setLeaderboardData(data);
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
+
+  // Helper function to format ranks
+  const getRankString = (index: number) => {
+    const rank = index + 1;
+    switch (rank) {
+      case 1:
+        return "1ST";
+      case 2:
+        return "2ND";
+      case 3:
+        return "3RD";
+      default:
+        return `${rank}TH`;
+    }
+  };
+
+  // Helper function to format names
+  const formatName = (fullName: string) => {
+    const names = fullName.split(" ");
+    if (names.length > 1) {
+      return `${names[0]} ${names[names.length - 1][0]}.`;
+    }
+    return fullName;
+  };
 
   return (
     <div className="leaderboard-page">
@@ -26,14 +63,14 @@ const LeaderboardPage = () => {
           <span>SCORE</span>
         </div>
         <div className="leaderboard-body">
-          {leaderboardData.map((entry, index) => (
+          {leaderboardData.map((student, index) => (
             <div
-              key={index}
+              key={student._id}
               className={`leaderboard-row ${index === 3 ? "highlight" : ""}`}
             >
-              <span>{entry.rank}</span>
-              <span>{entry.name}</span>
-              <span>{entry.score.toLocaleString()}</span>
+              <span>{getRankString(index)}</span>
+              <span>{formatName(student.studentName)}</span>
+              <span>{student.totalBoxes.toLocaleString()}</span>
             </div>
           ))}
         </div>
