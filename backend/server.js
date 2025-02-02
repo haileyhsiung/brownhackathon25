@@ -36,7 +36,7 @@ app.use(express.json()); //Converts the incoming request's JSON payload into a J
 
 
 // Routes
-app.use('/api/reviews', reviewRoutes)
+app.use('/', reviewRoutes)
 
 
 // allows files in client folder to be accessed from browser, only needed if we use backend port for the front end 
