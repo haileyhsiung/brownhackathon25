@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/HomePage.css";
 import { SignOutButton, useUser } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";
@@ -10,7 +10,57 @@ import shirt from "../assets/shirt.png";
 
 const HomePage = () => {
   const { user } = useUser();
-  const [stats, setStats] = useState({ totalBoxes: 0, totalPoints: 0 }); 
+  const [stats, setStats] = useState({ totalBoxes: 0, totalPoints: 0 });
+  const [bannerID, setBannerID] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user?.primaryEmailAddress?.emailAddress) {
+        try {
+          const bannerResponse = await fetch(
+            `http://localhost:5001/user-bannerID/${user.primaryEmailAddress.emailAddress}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!bannerResponse.ok) {
+            throw new Error("Failed to fetch bannerID");
+          }
+
+          const fetchedBannerID = await bannerResponse.json();
+          setBannerID(fetchedBannerID.bannerID);
+
+          const statsResponse = await fetch(
+            `http://localhost:5001/user/${fetchedBannerID.bannerID}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!statsResponse.ok) {
+            throw new Error("Failed to fetch stats");
+          }
+
+          const statsData = await statsResponse.json();
+          setStats({
+            totalBoxes: statsData.totalBoxes,
+            totalPoints: statsData.totalPoints,
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   return (
     <div className="page">
