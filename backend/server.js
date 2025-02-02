@@ -7,6 +7,7 @@ const path = require("path");
 const studentRoutes = require("./routes/studentRoutes");
 const dataSyncRoutes = require("./routes/dataSyncRoutes");
 const getDriveData = require("./services/googleDriveService");
+const Student = require("./models/studentModel");
 // Start the server
 const PORT = process.env.PORT;
 

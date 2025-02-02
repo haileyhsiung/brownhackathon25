@@ -45,7 +45,7 @@ const HomePage = () => {
           },
         }
       );
-
+      
       if (!response.ok) {
         throw new Error("Failed to sync data");
       }
