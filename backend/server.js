@@ -7,7 +7,7 @@ const path = require("path");
 const studentRoutes = require("./routes/studentRoutes");
 const dataSyncRoutes = require("./routes/dataSyncRoutes");
 // Start the server
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT;
 
 // Environment variable configurations
 require("dotenv").config();
