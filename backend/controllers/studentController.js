@@ -118,6 +118,27 @@ const claimReward =  async (req, res) => {
 };
 
 
+//get banner ID from email 
+const getBannerID = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const student = await Student.findOne({ email });
+        
+
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+        res.json({ bannerID: student.bannerID });
+
+    } catch (err) {
+        res.status(500).json({ error: "Server error", details: err.message });
+    }
+};
+
+
+
+
+
 
 module.exports = {registerUser, loginUser, getLeaderBoard, 
-    getStudentUser, updateUserStats, claimReward};
+    getStudentUser, getBannerID, updateUserStats, claimReward};
