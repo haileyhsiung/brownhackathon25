@@ -45,4 +45,4 @@ async function addDriveDataToDB(req, res) {
   }
 }
 
-module.exports = { addDriveDataToDB, syncToDrive };
+module.exports = { addDriveDataToDB };
