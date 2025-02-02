@@ -12,6 +12,8 @@ const HomePage = () => {
   const { user } = useUser();
   const [stats, setStats] = useState({ totalBoxes: 0, totalPoints: 0 });
   const [bannerID, setBannerID] = useState("");
+  const [selectedReward, setSelectedReward] = useState<any>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,10 +29,7 @@ const HomePage = () => {
             }
           );
 
-          if (!bannerResponse.ok) {
-            throw new Error("Failed to fetch bannerID");
-          }
-
+          if (!bannerResponse.ok) throw new Error("Failed to fetch bannerID");
           const fetchedBannerID = await bannerResponse.json();
           setBannerID(fetchedBannerID.bannerID);
 
@@ -44,15 +43,9 @@ const HomePage = () => {
             }
           );
 
-          if (!statsResponse.ok) {
-            throw new Error("Failed to fetch stats");
-          }
-
+          if (!statsResponse.ok) throw new Error("Failed to fetch stats");
           const statsData = await statsResponse.json();
-          setStats({
-            totalBoxes: statsData.totalBoxes,
-            totalPoints: statsData.totalPoints,
-          });
+          setStats(statsData);
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
@@ -61,6 +54,48 @@ const HomePage = () => {
 
     fetchUserData();
   }, [user]);
+
+  const handleClaimReward = async () => {
+    if (!selectedReward) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5001/claim-reward/${bannerID}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            change: -selectedReward.points,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to claim reward");
+      }
+
+      const updatedStats = await response.json();
+      setStats(updatedStats);
+      setSelectedReward(null);
+      setClaimError(null);
+    } catch (err) {
+      setClaimError("Failed to claim reward");
+    }
+  };
+
+  const rewards = [
+    { points: 10, description: "Jo's Cookie", image: cookie },
+    { points: 25, description: "1 Swipe", image: swipe },
+    {
+      points: 50,
+      description: "10% Off Brown Bookstore Coupon",
+      image: coupon,
+    },
+    { points: 100, description: "Brown T-Shirt!!!", image: shirt },
+  ];
 
   return (
     <div className="page">
@@ -117,29 +152,12 @@ const HomePage = () => {
             </div>
           </div>
           <div className="rewards-container">
-            {[
-              {
-                points: 10,
-                description: "Jo's Cookie",
-                image: cookie,
-              },
-              {
-                points: 25,
-                description: "1 Swipe",
-                image: swipe,
-              },
-              {
-                points: 50,
-                description: "10% Off Brown Bookstore Coupon",
-                image: coupon,
-              },
-              {
-                points: 100,
-                description: "Brown T-Shirt!!!",
-                image: shirt,
-              },
-            ].map((reward, index) => (
-              <div key={index} className="reward-card">
+            {rewards.map((reward, index) => (
+              <div
+                key={index}
+                className="reward-card"
+                onClick={() => setSelectedReward(reward)}
+              >
                 <img
                   src={reward.image}
                   alt={reward.description}
@@ -151,6 +169,40 @@ const HomePage = () => {
             ))}
           </div>
         </div>
+
+        {selectedReward && (
+          <div
+            className="modal-backdrop"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <div className="reward-modal">
+              <button
+                className="modal-close"
+                onClick={() => setSelectedReward(null)}
+              >
+                ×
+              </button>
+              <img
+                src={selectedReward.image}
+                alt={selectedReward.description}
+                className="modal-image"
+              />
+              <h2>{selectedReward.description}</h2>
+              <p>Cost: {selectedReward.points} Points</p>
+              <p>You have: {stats.totalPoints} Points</p>
+              {claimError && <p className="error-message">{claimError}</p>}
+              <button
+                className="btn-claim"
+                onClick={handleClaimReward}
+                disabled={stats.totalPoints < selectedReward.points}
+              >
+                {stats.totalPoints >= selectedReward.points
+                  ? "Claim Reward"
+                  : "Not Enough Points"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
