@@ -3,7 +3,7 @@ const Student = require('../models/studentModel');
 //create router
 const router = express.Router();
 //imports functions from studentControllers used in the api endpoints
-const{registerUser, loginUser, getLeaderBoard, getStudentUser, getBannerID
+const{registerUser, loginUser, getLeaderBoard, getStudentUser, getBannerID,
     updateUserStats, claimReward} = require('../controllers/studentController')
 
 
