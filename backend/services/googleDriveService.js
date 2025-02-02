@@ -1,11 +1,8 @@
-const fs = require("fs");
 const { google } = require("googleapis");
 const path = require("path");
-const credentialsPath = path.join(__dirname, "credentials.json");
-const credentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
 
 const auth = new google.auth.GoogleAuth({
-  credentials: credentials,
+  keyFile: path.join("", "./credentials.json"),
   scopes: [
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/drive.file",
