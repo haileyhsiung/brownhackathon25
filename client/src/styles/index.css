@@ -10,6 +10,16 @@
   --text-dark: #2d4c2d;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 body {
   margin: 0;
   font-family: "Press Start 2P", monospace;

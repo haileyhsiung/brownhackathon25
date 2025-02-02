@@ -3,6 +3,10 @@ import "../styles/HomePage.css";
 import { SignOutButton, useUser } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";
 import coin from "../assets/mario-coin.png";
+import cookie from "../assets/cookie.png";
+import coupon from "../assets/coupon.png";
+import swipe from "../assets/swipe.png";
+import shirt from "../assets/shirt.png";
 
 const HomePage = () => {
   const { user } = useUser();
@@ -64,12 +68,33 @@ const HomePage = () => {
           </div>
           <div className="rewards-container">
             {[
-              { points: 10, description: "Jo's Cookie" },
-              { points: 25, description: "1 Swipe" },
-              { points: 50, description: "20% Off Brown Bookstore Coupon" },
-              { points: 100, description: "Brown T-Shirt!!!" },
+              {
+                points: 10,
+                description: "Jo's Cookie",
+                image: cookie,
+              },
+              {
+                points: 25,
+                description: "1 Swipe",
+                image: swipe,
+              },
+              {
+                points: 50,
+                description: "10% Off Brown Bookstore Coupon",
+                image: coupon,
+              },
+              {
+                points: 100,
+                description: "Brown T-Shirt!!!",
+                image: shirt,
+              },
             ].map((reward, index) => (
               <div key={index} className="reward-card">
+                <img
+                  src={reward.image}
+                  alt={reward.description}
+                  className="reward-image"
+                />
                 <h3>{reward.points} Points</h3>
                 <p>{reward.description}</p>
               </div>
