@@ -6,6 +6,7 @@ import coin from "../assets/mario-coin.png";
 
 const HomePage = () => {
   const { user } = useUser();
+
   return (
     <div className="page">
       <div className="dashboard">

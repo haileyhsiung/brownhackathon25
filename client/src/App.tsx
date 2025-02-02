@@ -30,24 +30,57 @@ const App: React.FC = () => {
   const [firstLogin, setFirstLogin] = useState(false);
   const [userInfo, setUserInfo] = useState<userInfo | null>(null);
 
+  // useEffect(() => {
+  //   // checks if user has loggined in for the first time. if so, send them to
+  //   // setupProfilepage
+  //   const checkIfFirstLogin = async () => {
+  //     if (isSignedIn && user) {
+  //       try {
+  //         const response = await fetch(`http://localhost:5001/login`);
+  //         const data = await response.json();
+  //         if (data.response_type === "success") {
+  //           setUserInfo(data.user_data);
+  //           setFirstLogin(false);
+  //         } else {
+  //           setFirstLogin(true);
+  //         }
+  //       } catch (error) {
+  //         console.error("error checking if user details are set up", error);
+  //       }
+  //     }
+  //   };
+  //   checkIfFirstLogin();
+  // }, [isSignedIn, user]);
   useEffect(() => {
-    // checks if user has loggined in for the first time. if so, send them to
-    // setupProfilepage
     const checkIfFirstLogin = async () => {
       if (isSignedIn && user) {
         try {
-          const response = await fetch(
-            `http://localhost:3232/get-user?clerk_id=${user.id}`
-          );
+          // Send POST request to login endpoint
+          const response = await fetch("http://localhost:5001/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: user.primaryEmailAddress?.emailAddress,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
           const data = await response.json();
-          if (data.response_type === "success") {
-            setUserInfo(data.user_data);
+
+          if (data.message === "Login successful") {
+            setUserInfo(data.student);
             setFirstLogin(false);
           } else {
             setFirstLogin(true);
           }
         } catch (error) {
-          console.error("error checking if user details are set up", error);
+          console.error("Login check failed:", error);
+          setFirstLogin(true);
         }
       }
     };

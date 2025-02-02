@@ -1,47 +1,66 @@
 import React, { useState, useEffect } from "react";
-import "../styles/SetupProfile.css"; // Can reuse the same styles
+import "../styles/SetupProfile.css";
 import { useUser } from "@clerk/clerk-react";
 
 interface SetupProfileProps {
   setFirstLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-/**
- * Renders a Set Up Profile Page. Only displayed when its the user's first time logging in.
- *
- * @returns {JSX.Element} A JSX element representing a Set Up Profile Page.
- */
 const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
   const [name, setName] = useState("");
-  const [school, setSchool] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [bannerID, setBannerID] = useState("");
   const [error, setError] = useState<string | null>(null);
-
   const { user } = useUser();
+
+  const validateBannerID = (id: string) => {
+    return id.startsWith("B01");
+  };
+
+  const handleBannerIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setBannerID(value);
+    if (value && !validateBannerID(value)) {
+      setError("Banner ID must start with B01");
+    } else {
+      setError(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !school || !phoneNumber) {
+    if (!name || !bannerID) {
       setError("All fields are required.");
       return;
     }
 
+    if (!validateBannerID(bannerID)) {
+      setError("Banner ID must start with B01");
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `http://localhost:3232/add-user?clerk_id=${user?.id}&email=${user?.emailAddresses}&name=${name}&phone_number=${phoneNumber}&school=${school}`
-      );
+      const response = await fetch("http://localhost:5001/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentName: name,
+          bannerID: bannerID,
+          email: user?.primaryEmailAddress?.emailAddress,
+        }),
+      });
 
       const data = await response.json();
 
-      if (data.response_type === "success") {
-        setFirstLogin(false);
-      } else {
-        console.log(data);
-        setError("Error creating profile.");
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
       }
+
+      setFirstLogin(false);
     } catch (err) {
-      console.error("Error creating profile:", err);
+      console.error("Registration error:", err);
       setError("An unexpected error occurred. Please try again.");
     }
   };
@@ -51,7 +70,7 @@ const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
       className="setup-profile-container"
       aria-label="Setup profile container"
     >
-      <h2 aria-label="Setup profile heading">Configure Your Information</h2>
+      <h2 aria-label="Setup profile heading">Student Registration</h2>
       <form
         onSubmit={handleSubmit}
         className="setup-profile-form"
@@ -63,9 +82,9 @@ const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
           </p>
         )}
 
-        {/* Configuring Name */}
+        {/* Name Field */}
         <div className="form-group" aria-label="Name input field">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">Full Name</label>
           <input
             id="name"
             type="text"
@@ -76,42 +95,27 @@ const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
             required
           />
         </div>
-        {/* Configuring Phone Number */}
-        <div className="form-group" aria-label="Phone number input field">
-          <label htmlFor="phoneNumber">Phone Number</label>
+
+        {/* Banner ID Field */}
+        <div className="form-group" aria-label="Banner ID input field">
+          <label htmlFor="bannerID">Banner ID</label>
           <input
-            id="phoneNumber"
+            id="bannerID"
             type="text"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="123-456-7890"
+            value={bannerID}
+            onChange={handleBannerIDChange}
+            placeholder="Enter your Banner ID"
+            aria-label="Enter your Banner ID"
             required
-            aria-label="Enter your phone number in the format 123-456-7890"
           />
         </div>
-        {/* Configuring School */}
-        <div className="form-group" aria-label="School selection field">
-          <label htmlFor="school">School:</label>
-          <select
-            id="school"
-            value={school}
-            onChange={(e) => setSchool(e.target.value)}
-            aria-label="Select your school"
-            required
-          >
-            <option value="" disabled>
-              Select your school
-            </option>
-            <option value="Brown">Brown</option>
-            <option value="RISD">RISD</option>
-          </select>
-        </div>
+
         <button
           type="submit"
-          aria-label="Save and continue button"
+          aria-label="Register button"
           className="btn btn-primary"
         >
-          Save and Continue
+          Complete Registration
         </button>
       </form>
     </div>
