@@ -19,7 +19,7 @@ router.get('/leaderboard', getLeaderBoard);
 
 router.get('/user/:bannerID', getStudentUser);
 
-router.post('/update-box-num/:bannerID', updateUserStats); 
+router.post('/update-stats/:bannerID', updateUserStats); 
 
 router.post('/claim-reward/:bannerID', claimReward); 
 
