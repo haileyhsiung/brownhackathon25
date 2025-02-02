@@ -16,6 +16,22 @@ const HomePage = () => {
   const [claimError, setClaimError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
+  const fetchStats = async (userBannerID: string) => {
+    const statsResponse = await fetch(
+      `http://localhost:5001/user/${userBannerID}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!statsResponse.ok) throw new Error("Failed to fetch stats");
+    const statsData = await statsResponse.json();
+    setStats(statsData);
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (user?.primaryEmailAddress?.emailAddress) {
@@ -34,19 +50,7 @@ const HomePage = () => {
           const fetchedBannerID = await bannerResponse.json();
           setBannerID(fetchedBannerID.bannerID);
 
-          const statsResponse = await fetch(
-            `http://localhost:5001/user/${fetchedBannerID.bannerID}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (!statsResponse.ok) throw new Error("Failed to fetch stats");
-          const statsData = await statsResponse.json();
-          setStats(statsData);
+          await fetchStats(fetchedBannerID.bannerID);
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
@@ -99,9 +103,10 @@ const HomePage = () => {
         throw new Error("Failed to send confirmation email");
       }
 
-      // Update state
-      const updatedStats = await claimResponse.json();
-      setStats(updatedStats);
+      // Fetch updated stats
+      await fetchStats(bannerID);
+
+      // Reset UI state
       setSelectedReward(null);
       setClaimError(null);
       setShowConfirmation(true);
