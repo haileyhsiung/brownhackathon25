@@ -1,7 +1,7 @@
 const Student = require("../models/studentModel");
 const {
   getDriveData,
-  deleteDriveFile,
+  renameDriveFile,
 } = require("../services/googleDriveService");
 
 async function addDriveDataToDB(req, res) {
@@ -37,7 +37,7 @@ async function addDriveDataToDB(req, res) {
     const fileId = "1ziP6ThsOu3z-DBFB1IRzxjrkHleNQWLA";
 
     // 5. Delete the file after successful merge
-    const deletionResult = await deleteDriveFile();
+    const deletionResult = await renameDriveFile();
 
     res.status(200).json({
       message: "Data merged and file deleted successfully",

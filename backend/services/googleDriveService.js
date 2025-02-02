@@ -3,90 +3,153 @@ const path = require("path");
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(__dirname, "credentials.json"),
-  scopes: ["https://www.googleapis.com/auth/drive"],
+  scopes: [
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/drive.metadata",
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/drive.readonly",
+  ],
+  clientOptions: {
+    subject: "compjoster@compjoster.iam.gserviceaccount.com",
+  },
 });
 
 const drive = google.drive({ version: "v3", auth });
-drive.permissions.list(
-  {
-    fileId: "1ziP6ThsOu3z-DBFB1IRzxjrkHleNQWLA",
-  },
-  (err, res) => {
-    if (err) {
-      console.log("Error fetching permissions: ", err);
-    } else {
-      console.log("File Permissions: ", res.data);
-    }
-  }
-);
+
+const listPermissions = (fileId) => {
+  return new Promise((resolve, reject) => {
+    drive.permissions.list({ fileId: fileId }, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res.data);
+      }
+    });
+  });
+};
 
 const addPermission = async (fileId) => {
-  const drive = await authenticate();
-
-  // Adding the service account to the file permissions
   try {
     const res = await drive.permissions.create({
       fileId: fileId,
       requestBody: {
         type: "user",
-        role: "writer", // or 'reader' if you only need read access
-        emailAddress: "compjoster@compjoster.iam.gserviceaccount.com", // Service account email
+        role: "writer",
+        emailAddress: "compjoster@compjoster.iam.gserviceaccount.com",
       },
     });
-
-    console.log("Permission Added:", res.data);
+    return res.data;
   } catch (err) {
-    console.error("Error adding permission:", err.message);
+    throw err;
   }
 };
-
-// Replace this with the file ID you're trying to access
-const fileId = "1f10D8B62cSYV1j8AUD2wM09ZtBGzR5hH";
-addPermission(fileId);
 
 async function getDriveData() {
   try {
     const response = await drive.files.list({
-      q: "name='newData.json' and mimeType='application/json'",
-      fields: "files(id, name)",
+      q: "name='newData.json' and trashed=false",
+      spaces: "drive",
+      fields: "files(id, name, mimeType, parents, permissions)",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
     });
 
     if (!response.data.files?.length) {
       throw new Error("newData.json not found in Google Drive");
     }
 
+    const fileId = response.data.files[0].id;
+
+    await drive.permissions.list({
+      fileId: fileId,
+      fields: "permissions(id, type, role, emailAddress)",
+    });
+
+    try {
+      await drive.permissions.create({
+        fileId: fileId,
+        requestBody: {
+          role: "reader",
+          type: "anyone",
+        },
+        fields: "id",
+      });
+    } catch (err) {
+      // Permission already exists or couldn't be added
+    }
+
     const file = await drive.files.get({
-      fileId: response.data.files[0].id,
+      fileId: fileId,
       alt: "media",
+      supportsAllDrives: true,
     });
 
     return file.data;
   } catch (error) {
-    console.error("Drive API Error:", error.message);
     throw error;
   }
 }
 
-async function deleteDriveFile() {
+async function renameDriveFile() {
   try {
     const response = await drive.files.list({
-      q: "name='newData.json' and mimeType='application/json'",
+      q: "name='newData.json' and mimeType='application/json' and trashed=false",
+      spaces: "drive",
       fields: "files(id, name)",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
     });
 
     if (!response.data.files?.length) {
-      throw new Error("newData.json not found for deletion");
+      throw new Error("newData.json not found for renaming");
     }
 
-    await drive.files.delete({
-      fileId: response.data.files[0].id,
+    const fileId = response.data.files[0].id;
+
+    const renameResponse = await drive.files.update({
+      fileId: fileId,
+      requestBody: {
+        name: "trash.json",
+      },
+      fields: "id,name",
+      supportsAllDrives: true,
     });
 
-    return true;
+    return renameResponse.data;
   } catch (error) {
-    console.error("Drive Delete Error:", error.message);
     throw error;
   }
 }
 
-module.exports = { getDriveData, deleteDriveFile };
+async function listFolderContents() {
+  try {
+    const response = await drive.files.list({
+      spaces: "drive",
+      fields: "files(id, name, mimeType, modifiedTime, size, owners)",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
+    });
+
+    return response.data.files;
+  } catch (error) {
+    throw error;
+  }
+}
+
+const fileId = "1ziP6ThsOu3z-DBFB1IRzxjrkHleNQWLA";
+
+async function main() {
+  try {
+    const files = await listFolderContents();
+    await listPermissions(fileId);
+    await addPermission(fileId);
+    const data = await getDriveData();
+  } catch (error) {
+    // Handle error
+  }
+}
+
+main();
+
+module.exports = { getDriveData, renameDriveFile };
