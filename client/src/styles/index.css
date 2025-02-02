@@ -1,0 +1,88 @@
+/* index.css */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  --pixel-size: 4px;
+  --grid-color: rgba(0, 0, 0, 0.1);
+  --border-brown: #8b6c42;
+  --bg-beige: #e8d7b9;
+  --bg-green: #4a7349;
+  --text-dark: #2d4c2d;
+}
+
+body {
+  margin: 0;
+  font-family: "Press Start 2P", monospace;
+  background: linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px),
+    var(--bg-green);
+  background-size: var(--pixel-size) var(--pixel-size);
+  color: var(--border-brown);
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+span {
+  font-family: "Press Start 2P", monospace;
+  color: var(--border-brown);
+  text-shadow: 2px 2px 0 var(--text-dark);
+}
+
+a {
+  text-decoration: none;
+  color: var(--border-brown);
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--bg-beige);
+}
+
+code {
+  font-family: "Press Start 2P", monospace;
+  background: var(--bg-beige);
+  color: var(--bg-beige);
+  padding: 2px 4px;
+  border: 2px solid var(--border-brown);
+  box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.2),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Pixel-perfect container */
+.pixel-container {
+  background: var(--bg-beige);
+  border: 4px solid var(--border-brown);
+  box-shadow: 4px 4px 0 var(--border-brown),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2);
+  margin: 20px;
+  padding: 20px;
+}
+
+/* Pixel button styling */
+.pixel-button {
+  background: var(--text-dark);
+  color: var(--bg-beige);
+  border: none;
+  padding: 8px 16px;
+  font-family: "Press Start 2P", monospace;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--border-brown),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2);
+}
+
+.pixel-button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--border-brown),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.2),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+}

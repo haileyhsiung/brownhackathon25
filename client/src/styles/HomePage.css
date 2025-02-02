@@ -1,0 +1,206 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  --pixel-size: 4px;
+  --grid-color: rgba(0, 0, 0, 0.1);
+}
+
+.page {
+  background: linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px), #4a7349;
+  background-size: var(--pixel-size) var(--pixel-size);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dashboard {
+  background: #e8d7b9;
+  padding: 20px;
+  border: 8px solid #8b6c42;
+  box-shadow: inset -8px -8px 0 0 rgba(0, 0, 0, 0.2),
+    inset 8px 8px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.dashboard-header {
+  display: grid;
+  grid-template-columns: 250px 1fr 200px;
+  gap: 20px;
+  align-items: start;
+}
+
+.logo-section {
+  background: #2d4c2d;
+  aspect-ratio: 1;
+  padding: 10px;
+  border: 4px solid #8b6c42;
+  box-shadow: inset -4px -4px 0 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.recycle-logo {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recycle-logo img {
+  padding-top: 20px;
+  max-width: 150%;
+  max-height: 160%;
+  object-fit: contain;
+}
+
+.stats-section {
+  background: #e5e5e5;
+  padding: 20px;
+  border: 4px solid #8b6c42;
+  height: 100%;
+  box-shadow: inset -4px -4px 0 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 250px;
+  max-height: 250px;
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  height: 100%;
+}
+
+.stat-item {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border: 4px solid #8b6c42;
+  box-shadow: inset -4px -4px 0 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.stat-item h2 {
+  font-family: "Press Start 2P", monospace;
+  font-size: 2rem;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: "Press Start 2P", monospace;
+  font-size: 3rem;
+  color: #2d4c2d;
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  background: #4a7349;
+  border: 4px solid #8b6c42;
+  box-shadow: inset -4px -4px 0 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.profile-id {
+  font-family: "Press Start 2P", monospace;
+  font-size: 1rem;
+}
+
+.btn-signout {
+  background: #2d4c2d;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 10px 20px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: inset -4px -4px 0 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-signout:hover {
+  background: #3d5c3d;
+}
+
+.rewards-section {
+  margin-top: 40px;
+  position: relative;
+  padding-bottom: 60px;
+}
+.rewards-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+@keyframes upDown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.up-down-animation {
+  animation: upDown 2s ease-in-out infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rewards-header h2 {
+  margin: 0 10px;
+  margin-top: 15px;
+}
+
+.coin-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.rewards-section h2 {
+  font-family: "Press Start 2P", monospace;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.rewards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.reward-card {
+  background: #e8d7b9;
+  padding: 20px;
+  border: 4px solid #8b6c42;
+  box-shadow: inset -4px -4px rgba(0, 0, 0, 0.2),
+    inset 4px 4px rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.reward-card h3 {
+  font-family: "Press Start 2P", monospace;
+  font-size: 1.5rem;
+}
+
+.reward-card p {
+  font-family: "Press Start 2P", monospace;
+}

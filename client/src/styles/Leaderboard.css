@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  --pixel-size: 4px;
+  --grid-color: rgba(0, 0, 0, 0.1);
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.leaderboard-page {
+  background: linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px), #4a7349;
+  background-size: var(--pixel-size) var(--pixel-size);
+  color: #ffe600; /* More saturated yellow */
+  font-family: "Press Start 2P", monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.leaderboard-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #fff;
+  text-shadow: 0 0 10px #ffe600;
+}
+
+.leaderboard-table {
+  width: 80%;
+}
+
+.leaderboard-header,
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+}
+
+.leaderboard-header {
+  font-size: 1.5rem;
+  border-bottom: 2px solid #ffe600;
+}
+
+.leaderboard-header span {
+  color: #fff;
+}
+
+.update-time {
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.8rem;
+  color: #ffe600;
+  margin-bottom: 30px;
+  opacity: 0.8;
+}
+
+.leaderboard-body .leaderboard-row {
+  padding: 10px;
+}
+
+.leaderboard-row:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.highlight {
+  color: #ffff00;
+  text-shadow: 0 0 8px #ffff00;
+}
+
+.leaderboard-row span {
+  font-size: 1.2rem;
+  animation: blink 2s ease-in-out infinite;
+  color: #ffe600;
+}

@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  --pixel-size: 4px;
+  --grid-color: rgba(0, 0, 0, 0.1);
+  --border-brown: #8b6c42;
+  --bg-beige: #e8d7b9;
+  --bg-green: #4a7349;
+  --bg-brown: #8a6240;
+}
+
+/* Global Styles */
+body {
+  font-family: "Press Start 2P", monospace;
+  image-rendering: pixelated;
+  background-color: var(--bg-brown);
+}
+
+/* App Container */
+.App {
+  background: linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px),
+    var(--bg-green);
+  background-size: var(--pixel-size) var(--pixel-size);
+  min-height: 100vh;
+}
+
+.navbar-custom {
+  background: var(--bg-beige) !important;
+  border: 4px solid var(--border-brown);
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2);
+  margin: 20px;
+  border-radius: 0;
+}
+
+.navbar-brand {
+  color: var(--border-brown) !important;
+  font-size: 1.2rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.nav.sections {
+  display: flex;
+  gap: 20px;
+}
+
+.nav.sections a {
+  color: var(--border-brown);
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 4px solid var(--border-brown);
+  background: var(--bg-beige);
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2);
+}
+
+.nav.sections a:hover {
+  background: #f0e4cd;
+  color: #6b5438;
+}
+
+/* Main Content */
+main {
+  padding: 20px;
+}
+
+/* Page Container */
+.page-container {
+  background: var(--bg-beige);
+  border: 8px solid var(--border-brown);
+  box-shadow: inset -8px -8px 0 rgba(0, 0, 0, 0.2),
+    inset 8px 8px 0 rgba(255, 255, 255, 0.2);
+  margin: 20px;
+  padding: 20px;
+}
+
+/* Profile Section */
+.user-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--bg-beige);
+  border: 4px solid var(--border-brown);
+}
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border-brown);
+  image-rendering: pixelated;
+}
+
+.user-name {
+  color: var(--border-brown);
+  font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav.sections {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav.sections a {
+    text-align: center;
+  }
+}
