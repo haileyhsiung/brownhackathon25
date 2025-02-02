@@ -6,7 +6,7 @@ const app = express();
 const path = require("path");
 const studentRoutes = require("./routes/studentRoutes");
 const dataSyncRoutes = require("./routes/dataSyncRoutes");
-const getDriveData = require("../services/googleDriveService");
+const getDriveData = require("./services/googleDriveService");
 // Start the server
 const PORT = process.env.PORT;
 
