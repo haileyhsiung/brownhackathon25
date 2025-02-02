@@ -1,7 +1,11 @@
 const { google } = require("googleapis");
-const credentials = process.env.GOOGLE_CREDENTIALS
-  ? JSON.parse(process.env.GOOGLE_CREDENTIALS)
-  : require("./credentials.json");
+let credentials;
+try {
+  credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+} catch (error) {
+  console.error("Error parsing GOOGLE_CREDENTIALS:", error);
+  process.exit(1);
+}
 const path = require("path");
 
 const auth = new google.auth.GoogleAuth({
