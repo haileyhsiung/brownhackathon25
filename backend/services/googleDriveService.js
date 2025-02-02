@@ -2,7 +2,7 @@ const { google } = require("googleapis");
 const path = require("path");
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.join("", "./credentials.json"),
+  keyFile: "/etc/secrets/credentials.json",
   scopes: [
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/drive.file",
