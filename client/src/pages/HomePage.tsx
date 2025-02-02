@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/HomePage.css";
 import { SignOutButton, useUser } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";
@@ -6,6 +6,7 @@ import coin from "../assets/mario-coin.png";
 
 const HomePage = () => {
   const { user } = useUser();
+  const [stats, setStats] = useState({ totalBoxes: 0, totalPoints: 0 }); 
 
   return (
     <div className="page">
@@ -25,11 +26,11 @@ const HomePage = () => {
             <div className="stats-container">
               <div className="stat-item">
                 <h2>Total Deposited</h2>
-                <div className="stat-value">1111</div>
+                <div className="stat-value">{stats.totalBoxes}</div>
               </div>
               <div className="stat-item">
                 <h2>Available Points</h2>
-                <div className="stat-value">1111</div>
+                <div className="stat-value">{stats.totalPoints}</div>
               </div>
             </div>
           </div>

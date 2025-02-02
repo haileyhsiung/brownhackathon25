@@ -57,6 +57,18 @@ const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
       if (!response.ok) {
         throw new Error(data.error || "Registration failed");
       }
+      
+      //make call to load data in intiallg
+      await fetch(`http://localhost:5001/update-stats/${bannerID}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          change: 0
+        }),
+      });
+
 
       setFirstLogin(false);
     } catch (err) {
