@@ -1,5 +1,8 @@
 const Student = require("../models/studentModel");
-const { getDriveData } = require("../services/googleDriveService");
+const {
+  getDriveData,
+  renameDriveFile,
+} = require("../services/googleDriveService");
 
 async function addDriveDataToDB(req, res) {
   try {
@@ -27,14 +30,14 @@ async function addDriveDataToDB(req, res) {
 
     const result = await Student.bulkWrite(bulkOps);
 
-    const renameDriveFile = await renameDriveFile();
+    const deletionResult = await renameDriveFile();
 
     res.status(200).json({
       message: "Data merged and file deleted successfully",
       matchedCount: result.matchedCount,
       modifiedCount: result.modifiedCount,
       upsertedCount: result.upsertedCount,
-      renamed: renameDriveFile,
+      fileDeleted: deletionResult,
     });
   } catch (error) {
     console.error("Merge Error:", error);
