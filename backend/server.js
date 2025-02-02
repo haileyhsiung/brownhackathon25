@@ -6,7 +6,7 @@ const app = express();
 const path = require("path");
 const studentRoutes = require("./routes/studentRoutes");
 // Start the server
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT;
 
 // Environment variable configurations
 require("dotenv").config();
