@@ -37,7 +37,7 @@ const HomePage = () => {
       if (user?.primaryEmailAddress?.emailAddress) {
         try {
           const bannerResponse = await fetch(
-            `https://brownhackathon25.onrender.com/${user.primaryEmailAddress.emailAddress}`,
+            `https://brownhackathon25.onrender.com/user-bannerID/${user.primaryEmailAddress.emailAddress}`,
             {
               method: "GET",
               headers: {

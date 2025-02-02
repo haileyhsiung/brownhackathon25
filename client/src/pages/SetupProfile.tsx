@@ -40,7 +40,7 @@ const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
     }
 
     try {
-      const response = await fetch("https://brownhackathon25.onrender.com/register", {
+      const response = await fetch("http://localhost:5001/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const SetupProfile = ({ setFirstLogin }: SetupProfileProps) => {
       }
       
       //make call to load data in intiallg
-      await fetch(`https://brownhackathon25.onrender.com/${bannerID}`, {
+      await fetch(`https://brownhackathon25.onrender.com/update-stats/${bannerID}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
