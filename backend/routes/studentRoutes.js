@@ -1,10 +1,10 @@
 const express = require('express');
-const Student = require('../models/reviewModel');
+const Student = require('../models/studentModel');
 //create router
 const router = express.Router();
-//imports functions from reviewControllers used in the api endpoints
+//imports functions from studentControllers used in the api endpoints
 const{registerUser, loginUser, getLeaderBoard, getStudentUser, 
-    updateUserStats, claimReward} = require('../controllers/reviewController')
+    updateUserStats, claimReward} = require('../controllers/studentController')
 
 
 //API ENDPOINTS

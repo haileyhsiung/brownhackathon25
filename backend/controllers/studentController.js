@@ -1,4 +1,4 @@
-const Student = require('../models/reviewModel');
+const Student = require('../models/studentModel');
 
 //register a new user
 const registerUser = async (req, res) => {

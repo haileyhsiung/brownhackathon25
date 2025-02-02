@@ -4,7 +4,7 @@ const cors = require('cors');
 //express app 
 const app = express();
 const path = require('path');
-const reviewRoutes = require('./routes/reviewRoutes')
+const studentRoutes = require('./routes/studentRoutes')
 // Start the server
 const PORT = process.env.PORT || 5001;
 
@@ -36,10 +36,10 @@ app.use(express.json()); //Converts the incoming request's JSON payload into a J
 
 
 // Routes
-app.use('/', reviewRoutes)
+app.use('/', studentRoutes)
 
 
 // allows files in client folder to be accessed from browser, only needed if we use backend port for the front end 
-app.use(express.static(path.join(__dirname, 'frontend')));
+app.use(express.static(path.join(__dirname, 'client')));
 
 
